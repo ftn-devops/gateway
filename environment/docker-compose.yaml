@@ -1,0 +1,94 @@
+version: '3.7'
+name: devops
+services:
+  gateway:
+    build:
+      context: ../../gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ../../gateway/build/libs/gateway-0.0.1-SNAPSHOT.jar:/app/gateway.jar
+    ports:
+      - "127.0.0.1:8800:8080"
+    env_file:
+      - .env.docker
+
+  user:
+    build:
+      context: ../../user
+      dockerfile: Dockerfile
+    volumes:
+      - ../../user/build/libs/user-0.0.1-SNAPSHOT.jar:/app/user.jar
+    ports:
+      - "127.0.0.1:8801:8080"
+    env_file:
+      - .env.docker
+    depends_on:
+      database:
+        condition: service_healthy
+
+  accommodation:
+    build:
+      context: ../../accommodation
+      dockerfile: Dockerfile
+    volumes:
+      - ../../accommodation/build/libs/accommodation-0.0.1-SNAPSHOT.jar:/app/accommodation.jar
+    ports:
+      - "127.0.0.1:8802:8080"
+    env_file:
+      - .env.docker
+    depends_on:
+      database:
+        condition: service_healthy
+
+  notification:
+    build:
+      context: ../../notification
+      dockerfile: Dockerfile
+    volumes:
+      - ../../notification/build/libs/notification-0.0.1-SNAPSHOT.jar:/app/notification.jar
+    ports:
+      - "127.0.0.1:8803:8080"
+    env_file:
+      - .env.docker
+    depends_on:
+      database:
+        condition: service_healthy
+
+  audit:
+    build:
+      context: ../../audit
+      dockerfile: Dockerfile
+    volumes:
+      - ../../audit/build/libs/audit-0.0.1-SNAPSHOT.jar:/app/audit.jar
+    ports:
+      - "127.0.0.1:8804:8080"
+    env_file:
+      - .env.docker
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: "postgres:11"
+    env_file:
+      - .env.docker
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres" , "pg_isready", "-U" ,"postgres"]
+      interval: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 10s
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: db@db.com
+      PGADMIN_DEFAULT_PASSWORD: pass
