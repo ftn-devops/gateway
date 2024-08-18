@@ -96,19 +96,21 @@ services:
       PGADMIN_DEFAULT_PASSWORD: pass
 
   cassandra:
-    image: cassandra:4.1.5
+    image: cassandra:latest
     container_name: cassandra
     restart: always
     ports:
       - "9042:9042"
     healthcheck:
-      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      test: cqlsh cassandra -u cassandra -p cassandra
       interval: 30s
       timeout: 30s
       retries: 5
-      
+    volumes:
+      - ./cassandra.yaml:/etc/cassandra/cassandra.yaml
+
   init-cassandra:
-    image: cassandra:4.1.5
+    image: cassandra:latest
     container_name: init-cassandra
     depends_on:
       cassandra:
@@ -118,3 +120,14 @@ services:
     volumes:
       - ./cassandra-init.sh:/cassandra-init.sh
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_PASS=devops
+      - RABBITMQ_DEFAULT_USER=devops
+      - RABBITMQ_PASSWORD=devops
+      - RABBITMQ_USERNAME=devops
