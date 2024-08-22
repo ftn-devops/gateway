@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgrespassword
+  POSTGRES_DB: mydb
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-db-script
+data:
+  postgres-init.sql: |
+    CREATE USER dev WITH PASSWORD 'dev' CREATEDB;
+    ALTER ROLE dev SUPERUSER;
+    CREATE DATABASE "user-db"
+        WITH
+        OWNER = dev
+        ENCODING = 'UTF8'
+        LC_COLLATE = 'en_US.utf8'
+        LC_CTYPE = 'en_US.utf8'
+        TABLESPACE = pg_default
+        CONNECTION LIMIT = -1;
+    CREATE DATABASE "accommodation-db"
+        WITH
+        OWNER = dev
+        ENCODING = 'UTF8'
+        LC_COLLATE = 'en_US.utf8'
+        LC_CTYPE = 'en_US.utf8'
+        TABLESPACE = pg_default
+        CONNECTION LIMIT = -1;
+    CREATE DATABASE "notification-db"
+        WITH
+        OWNER = dev
+        ENCODING = 'UTF8'
+        LC_COLLATE = 'en_US.utf8'
+        LC_CTYPE = 'en_US.utf8'
+        TABLESPACE = pg_default
+        CONNECTION LIMIT = -1;
