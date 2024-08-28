@@ -32,3 +32,5 @@ spec:
       value: logs
     - name: CASSANDRA_DATACENTER
       value: datacenter1
+    - name: JAEGER_SERVICE_COLLECTOR
+      value: otel-collector-opentelemetry-collector.observability

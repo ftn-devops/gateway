@@ -2,6 +2,21 @@
 # k8s Set Up
 
 Have kubernetess running from Docker Desktop.
+
+# Install HELM
+
+First we need to instal HELM on our machine, you can follow instructions from official site : https://helm.sh/docs/intro/install/
+
+
+for WINDOWS execute next command:
+```bash
+winget install Helm.Helm
+```
+for MacOS execute next command:
+```bash
+brew install helm
+```
+
 ## Run Locally
 
 Navigate to this 'k8s' floder and execute
