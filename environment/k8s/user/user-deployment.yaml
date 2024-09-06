@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: user
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: user
+  labels:
+    app: user
+spec:
+  containers:
+  - name: user
+    image: ftndevops123/user-service:develop
+    ports:
+    - containerPort: 8080
+    env:
+    - name: SPRING_DATASOURCE_USER_URL
+      value: jdbc:postgresql://postgres:5432/user-db
+    - name: RABBITMQ_HOST
+      value: rabbitmq
+    - name: RABBITMQ_PORT
+      value: "5672"

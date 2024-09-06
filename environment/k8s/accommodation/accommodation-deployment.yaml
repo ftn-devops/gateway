@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: accommodation
+spec:
+  ports:
+    - port: 8081
+      targetPort: 8081
+  selector:
+    app: accommodation
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: accommodation
+  labels:
+    app: accommodation
+spec:
+  containers:
+  - name: accommodation
+    image: ftndevops123/accomodation-service:develop
+    ports:
+    - containerPort: 8081
+    env:
+    - name: SPRING_DATASOURCE_ACCOMMODATION_URL
+      value: jdbc:postgresql://postgres:5432/accommodation-db
+    - name: RABBITMQ_HOST
+      value: rabbitmq
+    - name: RABBITMQ_PORT
+      value: "5672"
